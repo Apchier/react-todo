@@ -5,6 +5,7 @@ import mysql from 'mysql2/promise';
 import logging from "./helpers/logging.js";
 
 const app = express()
+
 dotenv.config()
 app.use(cors())
 app.use(express.json())
@@ -85,17 +86,17 @@ router.put('/:id', async (req, res, next) => {
     const { text, status } = req.body
 
     if (!text && status) {
-        return res.status(400).json({
+        return res.status(404).json({
             success: false,
-            statusCode: 400,
+            statusCode: 404,
             message: 'Some fields are missing',
         })
     }
 
-    const nextTodo = { text, status };
+    const newTodo = { text, status };
     try {
         const sql = `UPDATE todos SET text = ?, status = ? WHERE id = ?`
-        const value = [nextTodo.text, nextTodo.status, todoID]
+        const value = [newTodo.text, newTodo.status, todoID]
         const [data] = await db.execute(sql, value)
         return res.status(200).json({
             success: true,
